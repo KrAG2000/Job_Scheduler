@@ -1,6 +1,6 @@
 # High-Throughput Distributed Job Scheduler
 
-A robust, distributed job scheduler built with **Node.js**, **Redis Streams**, and **PostgreSQL**. Designed to handle high concurrency, fault tolerance, and "at-least-once" delivery guarantees.
+A robust, distributed job scheduler built with **Node.js**, **Redis Streams**, and **PostgreSQL**. Designed to handle high concurrency, fault tolerance, and at-least-once delivery guarantees.
 
 ## 🚀 Key Features
 
@@ -71,14 +71,6 @@ curl -X POST http://localhost:3000/jobs \
 curl http://localhost:3000/jobs/<JOB_ID>
 ```
 
-## 🧪 Testing
-
-### Load Test
-Run the included load test script to simulate 1000 concurrent jobs:
-```bash
-node load-test.js
-```
-
 ### Chaos Test
 1. Start the system.
 2. Submit a long-running job.
@@ -92,6 +84,3 @@ node load-test.js
 2.  **Consumer Groups**: Allows multiple workers to read from the same stream without processing the same message twice.
 3.  **Idempotency**: The API generates a UUID. Workers should use this ID to ensure operations (like charging a credit card) aren't repeated if a job is retried.
 4.  **Backpressure**: Redis Streams naturally handle backpressure; consumers pull data at their own pace.
-
----
-*Built as a portfolio project to demonstrate advanced backend engineering skills.*
