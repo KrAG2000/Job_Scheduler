@@ -1,0 +1,361 @@
+{
+  "date": "2026-10-12T17:58:44.470Z",
+  "machine": {
+    "cpu": "13th Gen Intel(R) Core(TM) i7-13620H",
+    "threads": 16,
+    "memoryGb": 15,
+    "os": "Linux 7.1.6-201.fc44.x86_64",
+    "node": "v20.19.4"
+  },
+  "workload": {
+    "handler": "demo",
+    "handlerWorkMs": 10,
+    "trials": 3
+  },
+  "scenarios": {
+    "ingest": {
+      "single": {
+        "jobs": 10000,
+        "clients": 64,
+        "median": {
+          "seconds": 11.57,
+          "jobsPerSec": 864,
+          "requestP50Ms": 69.2,
+          "requestP99Ms": 184.3
+        },
+        "trials": [
+          {
+            "seconds": 21.4,
+            "jobsPerSec": 467,
+            "requestP50Ms": 75.9,
+            "requestP99Ms": 186.1
+          },
+          {
+            "seconds": 11.08,
+            "jobsPerSec": 903,
+            "requestP50Ms": 66.9,
+            "requestP99Ms": 168.1
+          },
+          {
+            "seconds": 11.57,
+            "jobsPerSec": 864,
+            "requestP50Ms": 69.2,
+            "requestP99Ms": 184.3
+          }
+        ]
+      },
+      "batch100": {
+        "jobs": 50000,
+        "clients": 16,
+        "median": {
+          "seconds": 12.62,
+          "jobsPerSec": 3963,
+          "requestP50Ms": 397.5,
+          "requestP99Ms": 605.5
+        },
+        "trials": [
+          {
+            "seconds": 12.62,
+            "jobsPerSec": 3963,
+            "requestP50Ms": 397.5,
+            "requestP99Ms": 605.5
+          },
+          {
+            "seconds": 13.16,
+            "jobsPerSec": 3799,
+            "requestP50Ms": 414.6,
+            "requestP99Ms": 652.1
+          },
+          {
+            "seconds": 11.75,
+            "jobsPerSec": 4256,
+            "requestP50Ms": 367.1,
+            "requestP99Ms": 527.2
+          }
+        ]
+      }
+    },
+    "scaling": [
+      {
+        "workers": 1,
+        "jobs": 20000,
+        "median": {
+          "drainJobsPerSec": 727,
+          "succeeded": 20000
+        },
+        "trials": [
+          {
+            "drainJobsPerSec": 419,
+            "succeeded": 20000
+          },
+          {
+            "drainJobsPerSec": 727,
+            "succeeded": 20000
+          },
+          {
+            "drainJobsPerSec": 751,
+            "succeeded": 20000
+          }
+        ],
+        "speedupVs1": 1
+      },
+      {
+        "workers": 2,
+        "jobs": 20000,
+        "median": {
+          "drainJobsPerSec": 1199,
+          "succeeded": 20000
+        },
+        "trials": [
+          {
+            "drainJobsPerSec": 1214,
+            "succeeded": 20000
+          },
+          {
+            "drainJobsPerSec": 1175,
+            "succeeded": 20000
+          },
+          {
+            "drainJobsPerSec": 1199,
+            "succeeded": 20000
+          }
+        ],
+        "speedupVs1": 1.65
+      },
+      {
+        "workers": 4,
+        "jobs": 20000,
+        "median": {
+          "drainJobsPerSec": 2871,
+          "succeeded": 20000
+        },
+        "trials": [
+          {
+            "drainJobsPerSec": 2776,
+            "succeeded": 20000
+          },
+          {
+            "drainJobsPerSec": 2871,
+            "succeeded": 20000
+          },
+          {
+            "drainJobsPerSec": 2901,
+            "succeeded": 20000
+          }
+        ],
+        "speedupVs1": 3.95
+      },
+      {
+        "workers": 8,
+        "jobs": 20000,
+        "median": {
+          "drainJobsPerSec": 2869,
+          "succeeded": 20000
+        },
+        "trials": [
+          {
+            "drainJobsPerSec": 2869,
+            "succeeded": 20000
+          },
+          {
+            "drainJobsPerSec": 2910,
+            "succeeded": 20000
+          },
+          {
+            "drainJobsPerSec": 2645,
+            "succeeded": 20000
+          }
+        ],
+        "speedupVs1": 3.95
+      }
+    ],
+    "latency": [
+      {
+        "ratePerSec": 100,
+        "durationSec": 30,
+        "median": {
+          "jobs": 2680,
+          "queueLatencyMs": {
+            "p50": 16.4,
+            "p95": 22.1,
+            "p99": 26.3
+          },
+          "endToEndMs": {
+            "p50": 32.4,
+            "p95": 38.7,
+            "p99": 44.5
+          },
+          "succeeded": 2680
+        },
+        "trials": [
+          {
+            "jobs": 2668,
+            "queueLatencyMs": {
+              "p50": 16.4,
+              "p95": 22.1,
+              "p99": 26.3
+            },
+            "endToEndMs": {
+              "p50": 32.4,
+              "p95": 38.7,
+              "p99": 44.5
+            },
+            "succeeded": 2668
+          },
+          {
+            "jobs": 2680,
+            "queueLatencyMs": {
+              "p50": 17.6,
+              "p95": 24,
+              "p99": 27.8
+            },
+            "endToEndMs": {
+              "p50": 33.7,
+              "p95": 40.9,
+              "p99": 46.8
+            },
+            "succeeded": 2680
+          },
+          {
+            "jobs": 2684,
+            "queueLatencyMs": {
+              "p50": 15.9,
+              "p95": 20.6,
+              "p99": 24.5
+            },
+            "endToEndMs": {
+              "p50": 31.9,
+              "p95": 36.6,
+              "p99": 42.7
+            },
+            "succeeded": 2684
+          }
+        ]
+      },
+      {
+        "ratePerSec": 500,
+        "durationSec": 30,
+        "median": {
+          "jobs": 12065,
+          "queueLatencyMs": {
+            "p50": 16.7,
+            "p95": 28.4,
+            "p99": 42
+          },
+          "endToEndMs": {
+            "p50": 33.2,
+            "p95": 46.3,
+            "p99": 66.1
+          },
+          "succeeded": 12065
+        },
+        "trials": [
+          {
+            "jobs": 12065,
+            "queueLatencyMs": {
+              "p50": 16.7,
+              "p95": 29.9,
+              "p99": 68.6
+            },
+            "endToEndMs": {
+              "p50": 33.3,
+              "p95": 48.7,
+              "p99": 105.2
+            },
+            "succeeded": 12065
+          },
+          {
+            "jobs": 12020,
+            "queueLatencyMs": {
+              "p50": 16.8,
+              "p95": 28.4,
+              "p99": 42
+            },
+            "endToEndMs": {
+              "p50": 33.2,
+              "p95": 46.3,
+              "p99": 66.1
+            },
+            "succeeded": 12020
+          },
+          {
+            "jobs": 12210,
+            "queueLatencyMs": {
+              "p50": 15.5,
+              "p95": 26.9,
+              "p99": 36
+            },
+            "endToEndMs": {
+              "p50": 31.8,
+              "p95": 44.5,
+              "p99": 57.8
+            },
+            "succeeded": 12210
+          }
+        ]
+      },
+      {
+        "ratePerSec": 1000,
+        "durationSec": 30,
+        "median": {
+          "jobs": 21630,
+          "queueLatencyMs": {
+            "p50": 17.3,
+            "p95": 33.4,
+            "p99": 53.4
+          },
+          "endToEndMs": {
+            "p50": 33.1,
+            "p95": 52.6,
+            "p99": 77.2
+          },
+          "succeeded": 21630
+        },
+        "trials": [
+          {
+            "jobs": 21970,
+            "queueLatencyMs": {
+              "p50": 16.7,
+              "p95": 30.4,
+              "p99": 52.2
+            },
+            "endToEndMs": {
+              "p50": 32.4,
+              "p95": 48.6,
+              "p99": 75.5
+            },
+            "succeeded": 21970
+          },
+          {
+            "jobs": 17350,
+            "queueLatencyMs": {
+              "p50": 17.8,
+              "p95": 37.5,
+              "p99": 62.5
+            },
+            "endToEndMs": {
+              "p50": 33.7,
+              "p95": 56.9,
+              "p99": 85
+            },
+            "succeeded": 17350
+          },
+          {
+            "jobs": 21630,
+            "queueLatencyMs": {
+              "p50": 17.3,
+              "p95": 33.4,
+              "p99": 53.4
+            },
+            "endToEndMs": {
+              "p50": 33.1,
+              "p95": 52.6,
+              "p99": 77.2
+            },
+            "succeeded": 21630
+          }
+        ]
+      }
+    ]
+  }
+}

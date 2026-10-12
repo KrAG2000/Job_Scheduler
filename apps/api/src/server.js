@@ -1,61 +1,37 @@
 require('dotenv').config();
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const { v4: uuidv4 } = require('uuid');
-const { QueueManager, db } = require('@scheduler/core');
-const errorHandler = require('./middleware/errorHandler');
-const Controller = require('./utils/Controller');
-const AppError = require('./utils/AppError');
+process.env.SERVICE_NAME ||= 'api';
 
-const app = express();
-const port = process.env.API_PORT || 3000;
+const { config, db, logger, QueueManager, closeRedis, metrics } = require('@scheduler/core');
+const createApp = require('./app');
+const Backpressure = require('./backpressure');
 
-app.use(cors());
-app.use(bodyParser.json());
+const main = async () => {
+  metrics.startDefaultMetrics();
+  await db.migrate();
 
-const queue = new QueueManager('jobs_stream');
+  const queueManager = new QueueManager();
+  const backpressure = new Backpressure({ queueManager });
+  backpressure.start();
 
-db.initDB();
+  if (config.api.apiKeys.length === 0) logger.warn('API_KEYS not set: authentication is DISABLED');
 
-app.post('/jobs', Controller(async (req, res) => {
-  const { type, payload } = req.body;
+  const app = createApp({ queueManager, backpressure });
+  const server = app.listen(config.api.port, () => logger.info({ port: config.api.port }, 'API listening'));
 
-  if (!type || !payload) {
-    throw new AppError(400, 'Missing type or payload');
-  }
+  const shutdown = async (signal) => {
+    logger.info({ signal }, 'shutting down');
+    backpressure.stop();
+    server.close(async () => {
+      await Promise.allSettled([db.pool.end(), closeRedis()]);
+      process.exit(0);
+    });
+    setTimeout(() => process.exit(1), 10000).unref();
+  };
+  process.on('SIGTERM', shutdown);
+  process.on('SIGINT', shutdown);
+};
 
-  const jobId = uuidv4();
-
-  await db.pool.query(
-    'INSERT INTO jobs (id, status, payload) VALUES ($1, $2, $3)',
-    [jobId, 'PENDING', JSON.stringify({ type, payload })]
-  );
-
-  const redisId = await queue.addJob({ jobId, type, payload });
-
-  await db.pool.query(
-    'UPDATE jobs SET redis_id = $1 WHERE id = $2',
-    [redisId, jobId]
-  );
-
-  res.status(201).json({ jobId, status: 'PENDING' });
-}));
-
-app.get('/jobs/:id', Controller(async (req, res) => {
-  const { id } = req.params;
-
-  const result = await db.pool.query('SELECT * FROM jobs WHERE id = $1', [id]);
-
-  if (result.rows.length === 0) {
-    throw new AppError(404, 'Job not found');
-  }
-
-  res.json(result.rows[0]);
-}));
-
-app.use(errorHandler);
-
-app.listen(port, () => {
-  console.log(`API Server running on port ${port}`);
+main().catch((err) => {
+  logger.fatal({ err }, 'API failed to start');
+  process.exit(1);
 });

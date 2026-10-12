@@ -6,10 +6,21 @@
     "apps/*",
     "packages/*"
   ],
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
-    "start": "concurrently \"npm run start:api\" \"npm run start:worker\"",
+    "start": "concurrently -n api,worker,scheduler \"npm run start:api\" \"npm run start:worker\" \"npm run start:scheduler\"",
     "start:api": "npm run start --workspace=apps/api",
-    "start:worker": "npm run start --workspace=apps/worker"
+    "start:worker": "npm run start --workspace=apps/worker",
+    "start:scheduler": "npm run start --workspace=apps/scheduler",
+    "start:tracker": "npm run start --workspace=apps/tracker-api",
+    "test": "node --test packages/core/test/",
+    "test:integration": "node --test --test-concurrency=1 test/integration/",
+    "test:all": "npm test && npm run test:integration",
+    "load": "node scripts/load.js",
+    "chaos": "node scripts/chaos.js",
+    "create-site": "node scripts/create-site.js"
   },
   "devDependencies": {
     "concurrently": "^8.2.0"

@@ -1,0 +1,47 @@
+# Resource-capped profile for reproducible benchmarks on a shared machine.
+#   docker compose -f docker-compose.yml -f docker-compose.bench.yml up -d --build \
+#     redis postgres api worker scheduler tracker-api gateway
+#   node scripts/benchmark.js --reset-db
+# The limits are recorded in the results file, so numbers are always reported together
+# with the hardware they ran on.
+
+x-small: &small
+  deploy:
+    resources:
+      limits: { cpus: "0.5", memory: 192M }
+
+services:
+  postgres:
+    deploy:
+      resources:
+        limits: { cpus: "1.5", memory: 768M }
+  redis:
+    deploy:
+      resources:
+        limits: { cpus: "0.5", memory: 256M }
+  api:
+    deploy:
+      replicas: 2
+      resources:
+        limits: { cpus: "0.5", memory: 192M }
+  worker:
+    environment:
+      WORKER_CONCURRENCY: "16"
+      PG_POOL_MAX: "8"
+    deploy:
+      replicas: 2
+      resources:
+        limits: { cpus: "0.5", memory: 192M }
+  scheduler:
+    deploy:
+      replicas: 1
+      resources:
+        limits: { cpus: "0.5", memory: 192M }
+  tracker-api:
+    deploy:
+      resources:
+        limits: { cpus: "0.25", memory: 128M }
+  gateway:
+    deploy:
+      resources:
+        limits: { cpus: "0.5", memory: 64M }

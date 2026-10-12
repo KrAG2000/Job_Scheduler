@@ -1,0 +1,123 @@
+{
+  "date": "2026-10-12T17:52:53.589Z",
+  "machine": {
+    "cpu": "13th Gen Intel(R) Core(TM) i7-13620H",
+    "threads": 16,
+    "memoryGb": 15,
+    "os": "Linux 7.1.6-201.fc44.x86_64",
+    "node": "v20.19.4"
+  },
+  "workload": {
+    "handler": "demo",
+    "handlerWorkMs": 10
+  },
+  "scenarios": {
+    "ingest": {
+      "single": {
+        "jobs": 10000,
+        "clients": 64,
+        "seconds": 50.12,
+        "jobsPerSec": 200,
+        "requestP50Ms": 273.8,
+        "requestP99Ms": 397
+      },
+      "batch100": {
+        "jobs": 50000,
+        "clients": 16,
+        "seconds": 14.31,
+        "jobsPerSec": 3495,
+        "requestP50Ms": 446.6,
+        "requestP99Ms": 607
+      }
+    },
+    "scaling": [
+      {
+        "workers": 1,
+        "jobs": 20000,
+        "drainJobsPerSec": 584,
+        "succeeded": 20000,
+        "speedupVs1": 1
+      },
+      {
+        "workers": 2,
+        "jobs": 20000,
+        "drainJobsPerSec": 1424,
+        "succeeded": 20000,
+        "speedupVs1": 2.44
+      },
+      {
+        "workers": 4,
+        "jobs": 20000,
+        "drainJobsPerSec": 2710,
+        "succeeded": 20000,
+        "speedupVs1": 4.64
+      },
+      {
+        "workers": 8,
+        "jobs": 20000,
+        "drainJobsPerSec": 2797,
+        "succeeded": 20000,
+        "speedupVs1": 4.79
+      }
+    ],
+    "latency": [
+      {
+        "ratePerSec": 100,
+        "durationSec": 30,
+        "jobs": 2647,
+        "succeeded": 2647,
+        "retried": 0,
+        "queueLatencyMs": {
+          "p50": 16.8,
+          "p95": 23.3,
+          "p99": 34.1
+        },
+        "endToEndMs": {
+          "p50": 33.3,
+          "p95": 40,
+          "p99": 53
+        },
+        "endToEndJobsPerSec": 88,
+        "drainJobsPerSec": 88
+      },
+      {
+        "ratePerSec": 500,
+        "durationSec": 30,
+        "jobs": 8165,
+        "succeeded": 8165,
+        "retried": 0,
+        "queueLatencyMs": {
+          "p50": 127.9,
+          "p95": 154.4,
+          "p99": 172
+        },
+        "endToEndMs": {
+          "p50": 143.3,
+          "p95": 170.6,
+          "p99": 192.9
+        },
+        "endToEndJobsPerSec": 262,
+        "drainJobsPerSec": 262
+      },
+      {
+        "ratePerSec": 1000,
+        "durationSec": 30,
+        "jobs": 8790,
+        "succeeded": 8790,
+        "retried": 0,
+        "queueLatencyMs": {
+          "p50": 119.2,
+          "p95": 146.2,
+          "p99": 158.4
+        },
+        "endToEndMs": {
+          "p50": 134.2,
+          "p95": 162.1,
+          "p99": 175
+        },
+        "endToEndJobsPerSec": 277,
+        "drainJobsPerSec": 277
+      }
+    ]
+  }
+}

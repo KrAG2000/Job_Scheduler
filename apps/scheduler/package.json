@@ -1,0 +1,13 @@
+{
+  "name": "scheduler",
+  "version": "1.0.0",
+  "private": true,
+  "main": "src/scheduler.js",
+  "scripts": {
+    "start": "node src/scheduler.js"
+  },
+  "dependencies": {
+    "@scheduler/core": "*",
+    "dotenv": "^16.3.1"
+  }
+}

@@ -1,0 +1,56 @@
+# Redis high availability overlay: primary + replica + 3 Sentinels.
+#   docker compose -f docker-compose.yml -f docker-compose.ha.yml up -d --build
+# Sentinels need a quorum of 2 to agree the primary is down, then promote the replica.
+# Clients (ioredis) ask the Sentinels who the current primary is and reconnect on failover.
+# Caveat: replication is async, so writes acknowledged just before a failover can be lost;
+# Postgres is the source of truth and the sweeper re-publishes affected jobs.
+#
+# Redis nodes get static IPs: Sentinel can't resolve a stopped container's hostname, so
+# with hostnames it never fails over (it enters "tilt" mode instead).
+
+x-sentinel: &sentinel
+  image: redis:7-alpine
+  command: >
+    sh -c 'printf "port 26379\nsentinel monitor mymaster 172.31.250.10 6379 2\nsentinel down-after-milliseconds mymaster 5000\nsentinel failover-timeout mymaster 15000\nsentinel parallel-syncs mymaster 1\n" > /tmp/sentinel.conf && redis-sentinel /tmp/sentinel.conf'
+  depends_on:
+    redis:
+      condition: service_healthy
+
+x-ha-env: &ha-env
+  REDIS_SENTINELS: sentinel-1:26379,sentinel-2:26379,sentinel-3:26379
+  REDIS_MASTER_NAME: mymaster
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.31.250.0/24
+
+services:
+  redis:
+    networks:
+      default:
+        ipv4_address: 172.31.250.10
+
+  redis-replica:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes --appendfsync everysec --replicaof 172.31.250.10 6379
+    networks:
+      default:
+        ipv4_address: 172.31.250.11
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  sentinel-1: *sentinel
+  sentinel-2: *sentinel
+  sentinel-3: *sentinel
+
+  api:
+    environment: *ha-env
+  worker:
+    environment: *ha-env
+  scheduler:
+    environment: *ha-env
+  tracker-api:
+    environment: *ha-env
