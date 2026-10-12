@@ -83,6 +83,7 @@ class Worker {
 
     // Wake up as soon as anything is published instead of waiting for the next poll.
     this.subscriber = this.queue.redis.duplicate();
+    this.subscriber.on('error', (err) => this.log.warn({ err }, 'wake subscriber error'));
     this.subscriber.on('message', () => this.waker.wake());
     await this.subscriber.subscribe(this.queue.wakeChannel);
 

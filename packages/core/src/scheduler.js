@@ -50,6 +50,7 @@ class Scheduler {
   // are found.
   async listen() {
     this.listener = this.queue.redis.duplicate();
+    this.listener.on('error', (err) => this.log.warn({ err }, 'outbox subscriber error'));
     this.listener.on('message', () => this.relayWaker.wake());
     await this.listener.subscribe(OUTBOX_CHANNEL);
   }
